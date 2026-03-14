@@ -8,7 +8,7 @@
 The test shows `Test Case 3 [undefined]: Empty Email Field – FAILED` on the Register page. The `[undefined]` tag means the test setup itself has a problem — we don't even know which device failed. That's already worth fixing.
 
 **2. Classify it:**
-- **Severity: High** — Registration is how every investor joins. If empty email validation is broken, users could sign up with bad data, which breaks KYC, notifications, and compliance.
+- **Severity: High** — Registration is how every investor joins. If empty email validation is broken, users could sign up with bad data, which breaks identity verification, notifications, and compliance.
 - **Priority: High** — This is the first thing users see. A bug here means fewer investors can sign up. Fix it this sprint.
 
 **3. What I do:**

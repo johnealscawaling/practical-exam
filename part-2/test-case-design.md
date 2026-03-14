@@ -3,10 +3,10 @@
 - **Wallet (Balance, Top-up, Withdrawal)** — Auto-invest takes money from the same wallet used for manual transactions, which could cause balance conflicts.
 - **Manual Investment Flow** — Both manual and auto-invest compete for the same tranche slots, so manual investors might see "fully subscribed" unexpectedly.
 - **Tranche Listing & Availability** — Auto-invest checks many tranches at once, which could slow down or break the existing tranche listing pages.
-- **Onboarding / KYC Workflow** — Auto-invest must block unverified users; if not, people who haven't finished KYC could make investments.
+- **Onboarding / identity verification Workflow** — Auto-invest must block unverified users; if not, people who haven't finished identity verification could make investments.
 - **Portfolio & Dashboard** — The dashboard must show auto-invested amounts correctly without counting them twice or missing them.
 - **Statement / Transaction History** — Adding a new transaction type could break existing statement pages or exports if they don't expect it.
-- **Notification Service** — Too many auto-invest notifications could delay important ones like OTP codes and KYC updates.
+- **Notification Service** — Too many auto-invest notifications could delay important ones like OTP codes and identity verification updates.
 - **User Authentication & Session Management** — Auto-invest runs in the background without a user session, so the new auth method must not weaken existing login security.
 
 ---
