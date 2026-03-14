@@ -1,25 +1,36 @@
 import { test, expect } from '@playwright/test';
 import { WalletPage } from '../pages/wallet.page';
+import { getCsvRow } from '../utils/csv-reader';
+
+type WalletData = {
+  testCase: string;
+  accountNumber: string;
+  accountHolder: string;
+  swiftCode: string;
+  currency: string;
+  expectedResult: string;
+};
 
 test.describe('Wallet — Add Bank Details', () => {
 
   test('happy path: add bank details successfully', async ({ page }) => {
+    const data = getCsvRow<WalletData>('wallet-data.csv', 'happyPath');
     const wallet = new WalletPage(page);
     await wallet.goto();
 
     await wallet.openBankDetailsModal();
     await wallet.fillBankDetails({
-      accountNumber: '1234567890',
-      accountHolder: 'John Doe',
-      swiftCode: 'DBSSSGSG',
-      currency: 'USD',
+      accountNumber: data.accountNumber,
+      accountHolder: data.accountHolder,
+      swiftCode: data.swiftCode,
+      currency: data.currency,
     });
     await wallet.submit();
 
     // Modal closes and bank details show up in the list
     await expect(wallet.bankModal).toBeHidden();
-    await expect(wallet.bankDetailsList).toContainText('DBSSSGSG');
-    await expect(wallet.bankDetailsList).toContainText('1234567890');
+    await expect(wallet.bankDetailsList).toContainText(data.swiftCode);
+    await expect(wallet.bankDetailsList).toContainText(data.accountNumber);
   });
 
   test('validation: submit with empty fields shows errors', async ({ page }) => {
@@ -36,11 +47,12 @@ test.describe('Wallet — Add Bank Details', () => {
   });
 
   test('SWIFT autofill: bank name fills in from SWIFT code', async ({ page }) => {
+    const data = getCsvRow<WalletData>('wallet-data.csv', 'swiftAutofill');
     const wallet = new WalletPage(page);
     await wallet.goto();
 
     await wallet.openBankDetailsModal();
-    await wallet.swiftCodeInput.fill('DBSSSGSG');
+    await wallet.swiftCodeInput.fill(data.swiftCode);
 
     // Bank name should fill in automatically
     await expect(wallet.bankNameInput).not.toBeEmpty();
@@ -48,11 +60,12 @@ test.describe('Wallet — Add Bank Details', () => {
   });
 
   test('validation: invalid SWIFT code shows error', async ({ page }) => {
+    const data = getCsvRow<WalletData>('wallet-data.csv', 'invalidSwift');
     const wallet = new WalletPage(page);
     await wallet.goto();
 
     await wallet.openBankDetailsModal();
-    await wallet.swiftCodeInput.fill('INVALID');
+    await wallet.swiftCodeInput.fill(data.swiftCode);
 
     // Should show an error for invalid SWIFT code
     await expect(wallet.errorMessages.first()).toBeVisible();
@@ -61,15 +74,16 @@ test.describe('Wallet — Add Bank Details', () => {
   });
 
   test('modal can be closed without saving', async ({ page }) => {
+    const data = getCsvRow<WalletData>('wallet-data.csv', 'closeModal');
     const wallet = new WalletPage(page);
     await wallet.goto();
 
     await wallet.openBankDetailsModal();
     await wallet.fillBankDetails({
-      accountNumber: '9999999999',
-      accountHolder: 'Jane Doe',
-      swiftCode: 'DBSSSGSG',
-      currency: 'USD',
+      accountNumber: data.accountNumber,
+      accountHolder: data.accountHolder,
+      swiftCode: data.swiftCode,
+      currency: data.currency,
     });
 
     // Close modal without submitting (press Escape or click outside)
@@ -77,6 +91,6 @@ test.describe('Wallet — Add Bank Details', () => {
 
     // Modal should close and no bank details should be saved
     await expect(wallet.bankModal).toBeHidden();
-    await expect(wallet.bankDetailsList).not.toContainText('9999999999');
+    await expect(wallet.bankDetailsList).not.toContainText(data.accountNumber);
   });
 });

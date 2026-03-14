@@ -2,10 +2,7 @@ import { test as base } from '@playwright/test';
 import { LoginPage } from '../pages/login.page';
 import { WalletPage } from '../pages/wallet.page';
 import { DashboardPage } from '../pages/dashboard.page';
-
-// Test credentials — use environment variables in real projects
-const TEST_EMAIL = process.env.TEST_EMAIL || 'qa-test@kilde.sg';
-const TEST_PASSWORD = process.env.TEST_PASSWORD || 'TestPassword123!';
+import { getCsvRow } from '../utils/csv-reader';
 
 // Custom fixtures that any test can use
 type Fixtures = {
@@ -41,7 +38,8 @@ export const test = base.extend<Fixtures>({
   loggedInPage: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    await loginPage.login(TEST_EMAIL, TEST_PASSWORD);
+    const data = getCsvRow<{ testCase: string; email: string; password: string }>('login-data.csv', 'valid');
+    await loginPage.login(data.email, data.password);
     const dashboardPage = new DashboardPage(page);
     await use(dashboardPage);
   },

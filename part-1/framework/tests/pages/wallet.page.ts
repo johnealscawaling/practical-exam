@@ -1,41 +1,65 @@
-import { Page, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { WalletPageSelectors } from './wallet.page.selector';
 
-export class WalletPage {
-  readonly page: Page;
-  readonly addBankDetailsButton: Locator;
-  readonly bankModal: Locator;
-  readonly bankNameInput: Locator;
-  readonly accountNumberInput: Locator;
-  readonly accountHolderInput: Locator;
-  readonly swiftCodeInput: Locator;
-  readonly currencySelect: Locator;
-  readonly submitButton: Locator;
-  readonly bankDetailsList: Locator;
-  readonly errorMessages: Locator;
-
+/**
+ * Page Object Model for the Wallet page.
+ *
+ * Extends {@link WalletPageSelectors} with interaction methods for the `/wallet`
+ * route, including opening the bank-details modal, filling in bank information,
+ * and submitting the form.
+ *
+ * @example
+ * ```ts
+ * const walletPage = new WalletPage(page);
+ * await walletPage.goto();
+ * await walletPage.openBankDetailsModal();
+ * await walletPage.fillBankDetails({
+ *   accountNumber: '1234567890',
+ *   accountHolder: 'John Doe',
+ *   swiftCode: 'ABCDEF12',
+ *   currency: 'USD',
+ * });
+ * await walletPage.submit();
+ * ```
+ */
+export class WalletPage extends WalletPageSelectors {
+  /**
+   * Creates an instance of WalletPage and initialises all locators.
+   * @param page - The Playwright {@link Page} instance to operate on.
+   */
   constructor(page: Page) {
-    this.page = page;
-    this.addBankDetailsButton = page.getByRole('button', { name: 'Add Bank Details' });
-    this.bankModal = page.getByTestId('bank-details-modal');
-    this.bankNameInput = page.getByLabel('Bank Name');
-    this.accountNumberInput = page.getByLabel('Account Number');
-    this.accountHolderInput = page.getByLabel('Account Holder Name');
-    this.swiftCodeInput = page.getByLabel('SWIFT Code');
-    this.currencySelect = page.getByLabel('Currency');
-    this.submitButton = page.getByRole('button', { name: 'Submit' });
-    this.bankDetailsList = page.getByTestId('bank-details-list');
-    this.errorMessages = page.locator('.error-message');
+    super(page);
   }
 
+  /**
+   * Navigates the browser to the wallet page (`/wallet`).
+   */
   async goto() {
     await this.page.goto('/wallet');
   }
 
+  /**
+   * Opens the bank-details modal by clicking the "Add Bank Details" button
+   * and waits for the modal to become visible.
+   */
   async openBankDetailsModal() {
     await this.addBankDetailsButton.click();
     await this.bankModal.waitFor({ state: 'visible' });
   }
 
+  /**
+   * Fills in the bank-details form inside the modal.
+   *
+   * The SWIFT code is entered first because it triggers an autofill that
+   * populates the bank name field. The method then waits for the bank name
+   * input to appear before filling the remaining fields.
+   *
+   * @param details - The bank details to enter.
+   * @param details.accountNumber - The bank account number.
+   * @param details.accountHolder - The name of the account holder.
+   * @param details.swiftCode - The SWIFT / BIC code (triggers bank name autofill).
+   * @param details.currency - The currency code to select (e.g., `"USD"`, `"SGD"`).
+   */
   async fillBankDetails(details: {
     accountNumber: string;
     accountHolder: string;
@@ -50,6 +74,9 @@ export class WalletPage {
     await this.currencySelect.selectOption(details.currency);
   }
 
+  /**
+   * Clicks the submit button to save the bank details form.
+   */
   async submit() {
     await this.submitButton.click();
   }

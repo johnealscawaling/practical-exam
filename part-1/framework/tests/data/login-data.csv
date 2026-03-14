@@ -1,0 +1,5 @@
+testCase,email,password,expectedResult
+valid,qa-test@kilde.sg,TestPassword123!,dashboard
+invalid,wrong@email.com,WrongPassword,error
+emptyEmail,,TestPassword123!,error
+emptyPassword,qa-test@kilde.sg,,error

@@ -1,0 +1,5 @@
+testCase,accountNumber,accountHolder,swiftCode,currency,expectedResult
+happyPath,1234567890,John Doe,DBSSSGSG,USD,success
+closeModal,9999999999,Jane Doe,DBSSSGSG,USD,notSaved
+swiftAutofill,,,DBSSSGSG,,autofill
+invalidSwift,,,INVALID,,error
