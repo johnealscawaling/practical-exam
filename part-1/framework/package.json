@@ -1,0 +1,21 @@
+{
+  "name": "kilde-playwright-tests",
+  "version": "1.0.0",
+  "description": "Playwright test suite for Kilde platform",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:chrome": "npx playwright test --project='chrome'",
+    "test:firefox": "npx playwright test --project='Desktop Firefox'",
+    "test:mobile": "npx playwright test --project='Mobile Safari'",
+    "test:wallet": "npx playwright test tests/specs/wallet.spec.ts",
+    "test:login": "npx playwright test tests/specs/login.spec.ts",
+    "report": "npx playwright show-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "typescript": "^5.9.3"
+  }
+}

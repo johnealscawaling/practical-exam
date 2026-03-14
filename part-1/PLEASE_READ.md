@@ -1,0 +1,1 @@
+Running the test failed because Cloudflare's bot protection is blocking the automated browser. Navigating app.kilde.sg/login stuck on a "Performing security verification" page (Cloudflare challenge), so Playwright never reaches the actual login form.
